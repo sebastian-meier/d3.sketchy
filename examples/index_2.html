@@ -1,0 +1,121 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="../lib/d3.slider-master/d3.slider.css" />  
+		<style type="text/css">
+			body,html{
+				margin:0;
+				padding:0;
+			}
+
+			#svg{
+				width:300px;
+				height:300px;
+				margin:30px 0 0 30px;
+			}
+
+			rect{
+				fill:none;
+				stroke:#000;
+			}
+
+			#sliders{
+				margin:50px;
+			}
+
+			.d3-slider{
+				margin-top:10px;
+				margin-bottom:30px;
+			}
+		</style>
+		<style type="text/css" id="pathstyle">
+			path{
+				fill:none;
+				stroke:#000;
+				stroke-width:0.3;
+			}
+		</style>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="../lib/d3.slider-master/d3.slider.js"></script>
+		<script src="../d3.sketchy.js"></script>
+	</head>
+	<body>
+		<svg id="svg" width="300" height="300"></svg>
+		
+		<div id="sliders">
+			Sketchiness
+			<div id="slider1" class="d3-slider"></div>
+			Distance
+			<div id="slider2" class="d3-slider"></div>
+			Line Width
+			<div id="slider3" class="d3-slider"></div>
+			Angle
+			<div id="slider4" class="d3-slider"></div>
+		</div>
+
+		<script type="text/javascript">
+
+			var svg = d3.select("#svg").append("g").attr("id", "circle");
+			var opts = {
+				svg:svg, 
+				x:150, 
+				y:150, 
+				r:150, 
+				density:8,
+				angle:40, 
+				sketch: 1
+			};
+			var sketchy = d3sketchy();
+			sketchy.circleFill(opts);
+
+			d3.select('#slider1').call(d3.slider().axis(true).min(0).max(3).value(1).on("slide", function(evt, value) {
+				opts.sketch = value;
+				draw();
+			}));
+
+			d3.select('#slider2').call(d3.slider().axis(true).min(0).max(20).value(8).on("slide", function(evt, value) {
+				opts.density = value;
+				draw();
+			}));
+
+			d3.select('#slider3').call(d3.slider().axis(true).min(0).max(5).value(0.3).on("slide", function(evt, value) {
+				var sheetToBeRemoved = document.getElementById('pathstyle');
+				var sheetParent = sheetToBeRemoved.parentNode;
+				sheetParent.removeChild(sheetToBeRemoved);
+
+
+				var sheet = document.createElement('style');
+				sheet.setAttribute("id", "pathstyle");
+				sheet.innerHTML = "path{fill:none;stroke:#000;stroke-width:"+value+";}";
+				document.body.appendChild(sheet);
+			}));
+
+			d3.select('#slider4').call(d3.slider().axis(true).min(0).max(180).value(40).on("slide", function(evt, value) {
+				opts.angle = value;
+				draw();
+			}));
+
+			function debounce(func, wait, immediate) {
+				var timeout;
+				return function() {
+					var context = this, args = arguments;
+					var later = function() {
+						timeout = null;
+						if (!immediate) func.apply(context, args);
+					};
+					var callNow = immediate && !timeout;
+					clearTimeout(timeout);
+					timeout = setTimeout(later, wait);
+					if (callNow) func.apply(context, args);
+				};
+			};
+
+			var draw = debounce(function(){
+				d3.select("#circle").remove();
+				var svg = d3.select("#svg").append("g").attr("id", "circle");
+				opts.svg = svg;
+				sketchy.circleFill(opts);
+			}, 100);
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,110 @@
+<html>
+	<head>
+		<style type="text/css">
+			body,html{
+				margin:0;
+				padding:0;
+			}
+
+			#svg{
+				width:1000px;
+				height:500px;
+				margin:30px 0 0 30px;
+			}
+
+			rect{
+				fill:none;
+				stroke:#000;
+			}
+
+			path{
+				fill:none;
+				stroke:#000;
+				stroke-width:0.3;
+				stroke-linecap:round;
+				stroke-linejoin:round;
+			}
+
+			path.red{
+				stroke:red;
+				stroke-width:1;
+			}
+
+			path.blue{
+				stroke:blue;
+				stroke-width:1;
+			}
+
+			path.black{
+				stroke:black;
+				stroke-width:1;
+			}
+
+			path.strokepath{
+				stroke-width:1.2;
+			}
+		</style>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="../d3.sketchy.js"></script>
+	</head>
+	<body>
+		<svg id="svg" width="1000" height="500"></svg>
+		<script type="text/javascript">
+			var svg = d3.select("#svg");
+
+			var sketchy = d3sketchy();
+
+			var defs = svg.append("defs");
+
+			var line = d3.svg.line()
+				.x(function(d) { return d.x; })
+				.y(function(d) { return d.y; })
+				.interpolate("cardinal-closed");
+
+			var data = [
+				{x:212.876,	y:254.911},
+				{x:79.876,	y:329.911},
+				{x:116.876,	y:640.911},
+				{x:357.876,	y:741.911},
+				{x:668.876,	y:531.911},
+				{x:554.876,	y:430.911},
+				{x:405.876,	y:522.911},
+				{x:283.876,	y:409.911},
+				{x:482.876,	y:245.911},
+				{x:546.876,	y:328.911},
+				{x:631.876,	y:328.911},
+				{x:685.876,	y:224.911},
+				{x:543.876,	y:92.911},
+				{x:316.876,	y:75.911},
+				{x:331.876,	y:282.911}
+			];
+
+			for(var i = 0; i<data.length; i++){
+				data[i].x = data[i].x/2;
+				data[i].y = data[i].y/2;
+			}
+
+			defs.append("clipPath")
+				.attr("id", "clip")
+				.append("path")
+					.attr("d", line(data));
+
+			sketchy.fill({
+				clip:"clip",
+				svg: svg, 
+				density:1, 
+				angle:40, 
+				sketch: 0.5
+			});
+
+			var paths = sketchy.alterPath({path:data, count:3, density:3, sketch:5});
+
+			for(var i = 0; i<paths.length; i++){
+				svg.append("path")
+					.attr("class", "strokepath")
+					.attr("d", line(paths[i]));
+			}
+
+		</script>
+	</body>
+</html>

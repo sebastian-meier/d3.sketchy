@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<style type="text/css">
+			body,html{
+				margin:0;
+				padding:0;
+			}
+
+			#svg{
+				width:700px;
+				height:250px;
+				margin:30px 0 0 30px;
+			}
+
+			rect{
+				fill:none;
+				stroke:#000;
+			}
+
+			path{
+				fill:none;
+				stroke:#000;
+				stroke-width:0.3;
+			}
+		</style>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="../d3.sketchy.js"></script>
+	</head>
+	<body>
+		<svg id="svg" width="700" height="250"></svg>
+		<script type="text/javascript">
+			var svg = d3.select("#svg");
+
+			var sketchy = new d3sketchy();
+
+			for(var i = 0; i<19; i++){
+
+				sketchy.rectFill({
+					x:18*i,
+					y:10,
+					width:25,
+					height:200,
+					svg: svg, 
+					density:1, 
+					angle:i*10, 
+					sketch: 0.5
+				});
+			}
+
+		</script>
+	</body>
+</html>
